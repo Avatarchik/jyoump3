@@ -12,19 +12,42 @@ import static org.apache.commons.lang3.ArrayUtils.*;
  * Created by Sp0x on 9/23/2014.
  */
 public class BitHelper {
-    private void __construct() {
-        // TODO Auto-generated method stub
+    public static short[] copyBlock(byte[] bytes, int offset, int length) {
+        int startByte = offset / 8;
+        int endByte = (offset + length - 1) / 8;
+        int shiftA = offset % 8;
+        int shiftB = 8 - shiftA;
+        short[] dst = new short[(length + 7) / 8];
 
+        if (shiftA == 0) {
+            System.arraycopy(bytes, startByte, dst, 0, dst.length);
+        } else {
+            int i = 0;
+            while (i < (endByte - startByte)) {
+                dst[i] = (short) (bytes[startByte + i] << shiftA | bytes[startByte + i + 1] >> shiftB);
+                i++;
+            }
+
+            if (i < dst.length) {
+                dst[i] = (short) (bytes[startByte + i] << shiftA);
+            }
+        }
+
+        dst[dst.length - 1] = (short) (dst[dst.length - 1] & (0xFF << dst.length * 8 - length));
+        return dst;
     }
 
-    public static int Read(AtomicReference<BigInteger> xbig, int len)
-    {
-        int rBig = xbig.get().shiftRight(64 - len).intValue();
-        xbig.set( xbig.get().shiftLeft(len) );
-        return rBig;
+    public static void copyBytes(byte[] dst, int dstOffset, byte[] src) {
+        System.arraycopy(src, 0, dst, dstOffset, src.length);
+    }
+    //ulong, int
+    public static int read(AtomicReference<BigInteger> x, int len) {
+        int r = (x.get().shiftRight(64 - len)).intValue();
+        x.set(x.get().shiftLeft(len));
+        return r;
     }
 
-    public static int Read(byte[] bytes, int offset, int len)
+    public static int read(byte[] bytes, int offset, int len)
     {
         int startByte = offset / 8;
         int endByte = (offset + len - 1 ) / 8;
@@ -40,7 +63,7 @@ public class BitHelper {
         //return Read(bitsBig, len);
         return offset;
     }
-    private BigInteger flagField = genBigint(0xffffffff, 0xffffffff);
+    private BigInteger flagField = genBigint(0xffffffff, 0xffffffff,false);
 
 
 
