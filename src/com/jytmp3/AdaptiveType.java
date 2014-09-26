@@ -1,4 +1,4 @@
-package com.company;
+package com.jytmp3;
 
 /**
  * Created by Sp0x on 9/24/2014.

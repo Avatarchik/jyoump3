@@ -1,11 +1,8 @@
-package com.company;
+package com.jytmp3;
 
 import java.math.BigInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.apache.commons.lang3.ArrayUtils;
-import static org.apache.commons.lang3.ArrayUtils.*;
-
-
 
 
 /**
@@ -63,6 +60,9 @@ public class BitHelper {
         //return Read(bitsBig, len);
         return offset;
     }
+
+
+
     private BigInteger flagField = genBigint(0xffffffff, 0xffffffff,false);
 
 
