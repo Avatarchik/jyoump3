@@ -18,7 +18,7 @@ import static com.jytmp3.BitHelper.*;
  * Created by Sp0x on 9/26/2014.
  */
 public class MP3Extractor implements IAudioExtractor {
-    public static final int MAX_CHUNK = 1024 * 1000 * 12;
+    public static final int MAX_CHUNK = 1024 * 1000 * 2;
     MemoryStream videoStream;
     //region Variables
     private ByteBuffer chunkBuffer;// As MemoryStream ' List(Of Byte());// As FileStream
@@ -142,23 +142,18 @@ public class MP3Extractor implements IAudioExtractor {
             ''' <param name="mp3Extractor">The extractor to modify</param>
             ''' <returns></returns>
             ''' <remarks></remarks>*/
-    private static boolean checkForVBRHeader(byte[] buffer, List<Long> frameOffsets , int offset, int mpgVersion, int chanMode
-    , AtomicReference<MP3Extractor> mp3Extractor)
-    {
-    boolean isVbrHeaderFrame = false;
-    if(frameOffsets.size()==0){ //'No frames have been found
-        // Check for an existing VBR header just to be safe (I haven't seen any in FLVs)
-        int hdrOffset = offset + getFrameDataOffset(mpgVersion, chanMode);
-        if(BigEndianBitConverter.ToUInt32(buffer, hdrOffset)==0x58696E67)
-        {
-            MP3Extractor extTmp = mp3Extractor.get();
-            isVbrHeaderFrame = true;
-            extTmp.delayWrite = false;
-            extTmp.hasVbrHeader = true;
-            mp3Extractor.set(extTmp);
+    private static boolean checkForVBRHeader(byte[] buffer, int offset, MP3Frame frame, MP3Extractor mp3Extractor) {
+        boolean isVbrHeaderFrame = false;
+        if (mp3Extractor.getFrameOffsets().size() == 0) { //'No frames have been found
+            // Check for an existing VBR header just to be safe (I haven't seen any in FLVs)
+            int hdrOffset = offset + getFrameDataOffset(frame.getMpegVersion(), frame.getChannelMode());
+            if (BigEndianBitConverter.ToUInt32(buffer, hdrOffset) == 0x58696E67) {
+                isVbrHeaderFrame = true;
+                mp3Extractor.delayWrite = false;
+                mp3Extractor.hasVbrHeader = true;
+            }
         }
-    }
-    return isVbrHeaderFrame;
+        return isVbrHeaderFrame;
     }
     //endregion
 
@@ -200,17 +195,14 @@ public class MP3Extractor implements IAudioExtractor {
 
     private static void parseHeaderInformation(MP3Extractor mp3Extractor, int offset, byte[] buffer, MP3Frame frame) throws IOException {
 
-        boolean isVbrHeaderFrame = checkForVBRHeader(buffer, mp3Extractor.frameOffsets, offset, frame.getMpegVersion(), frame.getChannelMode(), mp3Extractor);
+        boolean isVbrHeaderFrame = checkForVBRHeader(buffer, offset, frame, mp3Extractor);
         if (!isVbrHeaderFrame) {
             if (mp3Extractor.frameInfo.getBitRate() == 0) {
                 mp3Extractor.frameInfo = frame;
+                mp3Extractor.frameInfo.setFirstFrameHeader(BigEndianBitConverter.ToUInt32(buffer, offset));
 
-                mp3Extractor.frameInfo.setBitRate(frame.getBitRate())
-                        .setMpegVersion(frame.getMpegVersion()).setSampleRate(frame.getSampleRate()).setChannelMode(frame.getChannelMode())
-                        .setFirstFrameHeader(BigEndianBitConverter.ToUInt32(buffer, offset));
-
-            } else if (!mp3Extractor.isVbr && bitrate != mp3Extractor.frameInfo.getBitRate()) {
-                mp3Extractor.isVbr = true;
+            } else if (!mp3Extractor.isVbr) {
+                    mp3Extractor.isVbr = true;
                 if (!mp3Extractor.hasVbrHeader) {
                     if (mp3Extractor.delayWrite) {
                         mp3Extractor.writeVbrHeader(true);
@@ -225,17 +217,17 @@ public class MP3Extractor implements IAudioExtractor {
     }
 
     private void writeVbrHeader(boolean isPlaceholder) throws IOException {
-        byte[] buffer = new byte[(getFrameLength(frameInfo.getMpegVersion(), 64000, frameInfo.getSampleRate(), 0))];
+        byte[] buffer = new byte[(MP3Frame.getFrameLength(frameInfo.getMpegVersion(), 64000, frameInfo.getSampleRate(), 0))];
         if (!isPlaceholder) {
             BigInteger header = genBigint(frameInfo.getFirstFrameHeader(), false);
             int dataOffset = getFrameDataOffset(frameInfo.getMpegVersion(), frameInfo.getChannelMode());
             header = bgintAnd(header, 0xFFFE0DFFL);
             header = bgintOr(header ,((frameInfo.getMpegVersion()==3 ? 5 : 8)) << 12);
-            BitHelper.copyBytes(buffer, 0, BigEndianBitConverter.getBytes(header));
-            BitHelper.copyBytes(buffer, dataOffset, BigEndianBitConverter.getBytes(0x58696E67));
-            BitHelper.copyBytes(buffer, dataOffset + 4, BigEndianBitConverter.getBytes(0x7));
-            BitHelper.copyBytes(buffer, dataOffset + 8, BigEndianBitConverter.getBytes(frameOffsets.size()));
-            BitHelper.copyBytes(buffer, dataOffset + 12, BigEndianBitConverter.getBytes(totalFrameLength));
+            BitHelper.copyBytes(buffer, 0, getBytes(header));
+            BitHelper.copyBytes(buffer, dataOffset, getBytes(0x58696E67));
+            BitHelper.copyBytes(buffer, dataOffset + 4, getBytes(0x7));
+            BitHelper.copyBytes(buffer, dataOffset + 8, getBytes(frameOffsets.size()));
+            BitHelper.copyBytes(buffer, dataOffset + 12, getBytes(totalFrameLength));
 
             for (int i = 0; i <= 99; i++) {
                 int frameIndex = ((i / 100) * this.frameOffsets.size());
@@ -245,7 +237,9 @@ public class MP3Extractor implements IAudioExtractor {
         videoStream.write(buffer);
     }
 
-
+    public List<Long> getFrameOffsets() {
+        return frameOffsets;
+    }
 
 
     //Region

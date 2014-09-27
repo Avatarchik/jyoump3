@@ -128,8 +128,11 @@ public int parseSampleRate() {
     }
 
     public int getFrameLength() {
-        int vFlag = (p_MpegVersion == 3 ? 144 : 72);
-        int tmpBitrate = vFlag * p_BitRate;
-        return (int) Math.floor(tmpBitrate / p_SampleRate) + p_Padding;
+        return getFrameLength(p_MpegVersion, p_BitRate, p_SampleRate, p_Padding);
+    }
+    public static int getFrameLength(int mpegVersion, int bitrate, int sampleRate, int padding) {
+        int vFlag = (mpegVersion == 3 ? 144 : 72);
+        bitrate = vFlag * bitrate;
+        return (int) Math.floor(bitrate / sampleRate) + padding;
     }
 }

@@ -2,6 +2,8 @@ package com.jytmp3;
 
 import java.math.BigInteger;
 import java.util.concurrent.atomic.AtomicReference;
+
+import com.sun.istack.internal.NotNull;
 import org.apache.commons.lang3.ArrayUtils;
 
 
@@ -104,7 +106,7 @@ public class BitHelper {
         BigInteger tmp = genBigint(i,signed);
         return header.or(tmp);
     }
-    public static BigInteger bgintAnd(BigInteger header, long i){return bgintAnd(header,i,true);}
+    public static BigInteger bgintAnd(BigInteger header, long i){return bgintAnd(header, i, true);}
     public static BigInteger bgintAnd(BigInteger header, long l, boolean signed) {
         BigInteger tmp = genBigint(l,signed);
         return header.and(tmp);
@@ -120,6 +122,10 @@ public class BitHelper {
         return out;
     }
 
+    public static byte[] getBytes(@NotNull BigInteger bigi)
+    {
+        return bigi.toByteArray();
+    }
     public static byte[] getBytes(int val)
     {
         return new byte[] { (byte)(val >> 24), (byte)(val >> 16), (byte)(val >> 8), (byte)val};
