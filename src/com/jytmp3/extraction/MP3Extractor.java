@@ -1,15 +1,18 @@
 package com.jytmp3.extraction;
 
+import com.jytmp3.BitHelper;
 import com.jytmp3.MemoryStream;
 import com.jytmp3.SeekOrigin;
 
 import java.io.*;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static com.jytmp3.BitHelper.*;
+
 
 /**
  * Created by Sp0x on 9/26/2014.
@@ -32,19 +35,7 @@ public class MP3Extractor implements IAudioExtractor {
     //endregion
 
 
-    //region "Static variables"
-    public static int[] mpeg1BitRate = new int[]{0, 32, 40, 48, 56, 64,
-            80, 96, 112, 128, 160, 192,
-            224, 256, 320, 0};
-    public static int[] mpeg2XBitRate = new int[]{0, 8, 16, 24, 32, 40,
-            48, 56, 64, 80, 96, 112,
-            128, 144, 160, 0};
-    public static int[] mpeg1SampleRate = new int[]{44100, 48000, 32000, 0};
-    public static int[] mpeg20SampleRate = new int[]{22050, 24000, 16000, 0};
-    public static int[] mpeg25SampleRate = new int[]{11025, 12000, 8000, 0};
-//endregion
-
-    //region Construction
+       //region Construction
     public MP3Extractor(String path) throws FileNotFoundException {
         FileOutputStream fout = new FileOutputStream(path, false);
         videoStream = new MemoryStream(fout);
@@ -123,53 +114,22 @@ public class MP3Extractor implements IAudioExtractor {
         return 4 + (mpegVersion == 3 ? (channelMode == 3 ? 17 : 32) : (channelMode == 3 ? 9 : 17));
     }
 
-    private static int getFrameLength(int mpegVersion, int bitRate, int sampleRate, int padding) {
-        int vFlag = (mpegVersion == 3 ? 144 : 72);
-        bitRate = vFlag * bitRate;
-        return (int) Math.floor(bitRate / sampleRate) + padding;
+     /* Parses the main information from the frame */
+    private BigInteger getMp3FrameInfo(BigInteger header, MP3Frame frame) {
+        AtomicReference<BigInteger> hRef = new AtomicReference<BigInteger>(header);
+        frame.setMpegVersion((BitHelper.read(hRef, 2))).
+            setLayerCount(BitHelper.read(hRef, 2));
+        BitHelper.read(hRef, 1);
+
+        frame.setBitRate(BitHelper.read(hRef, 4)).
+                setSampleRate(BitHelper.read(hRef, 2)).
+                setPadding(BitHelper.read(hRef, 1));
+        BitHelper.read(hRef, 1);
+        frame.setChannelMode(BitHelper.read(hRef, 2));
+        return header;
     }
 
-    /* ''' <summary>
-             ''' Parses the main information from the frame
-             ''' </summary>
-             ''' <param name="header">The header flag</param>
-             ''' <param name="mpegVersion"></param>
-             ''' <param name="layer"></param>
-             ''' <param name="bitrate"></param>
-             ''' <param name="padding"></param>
-             ''' <param name="channelMode"></param>
-             ''' <param name="sampleRate"></param>
-             ''' <remarks></remarks>*/
-    private void getMp3FrameInfo(AtomicReference<BigInteger> header, AtomicReference<Integer> mpegVersion, AtomicReference<Integer> layer,
-                                 AtomicReference<Integer> bitrate, AtomicReference<Integer> padding,
-            AtomicReference<Integer> channelMode, AtomicReference<Integer> sampleRate) {
-        mpegVersion.set(BitHelper.read(header, 2));
-        layer.set(BitHelper.read(header, 2));
-        BitHelper.read(header, 1));
-        bitrate.set(BitHelper.read(header, 4));
-        sampleRate.set(BitHelper.read(header, 2));
-        padding.set(BitHelper.read(header, 1));
-        BitHelper.read(header, 1);
-        channelMode.set(BitHelper.read(header, 2));
-    }
 
-    /* ''' <summary>
-             ''' Gets ssamplerate, based on the version of MPEG
-             ''' </summary>
-             ''' <param name="mpgVersion"></param>
-             ''' <param name="sampleRate"></param>
-             ''' <remarks></remarks>*/
-    private static int calcSampleRate(int mpgVersion, int sampleRate) {
-        switch (mpgVersion) {
-            case 2:
-                sampleRate = mpeg20SampleRate[sampleRate]; break;
-            case 3:
-                sampleRate = mpeg1SampleRate[sampleRate]; break;
-            default:
-                sampleRate = mpeg25SampleRate[sampleRate];
-        }
-        return sampleRate;
-    }
     /*
     ''' <summary>
             ''' Checks if the given frame is a VBR Header frame.
@@ -185,110 +145,109 @@ public class MP3Extractor implements IAudioExtractor {
     private static boolean checkForVBRHeader(byte[] buffer, List<Long> frameOffsets , int offset, int mpgVersion, int chanMode
     , AtomicReference<MP3Extractor> mp3Extractor)
     {
-    boolean bx = false;
+    boolean isVbrHeaderFrame = false;
     if(frameOffsets.size()==0){ //'No frames have been found
         // Check for an existing VBR header just to be safe (I haven't seen any in FLVs)
-        int hdrOffset = offset + GetFrameDataOffset(mpgVersion, chanMode);
+        int hdrOffset = offset + getFrameDataOffset(mpgVersion, chanMode);
         if(BigEndianBitConverter.ToUInt32(buffer, hdrOffset)==0x58696E67)
         {
-       // ' "Xing"
+            MP3Extractor extTmp = mp3Extractor.get();
             isVbrHeaderFrame = true;
-            mp3Extractor.delayWrite = false;
-            mp3Extractor.hasVbrHeader = true;
+            extTmp.delayWrite = false;
+            extTmp.hasVbrHeader = true;
+            mp3Extractor.set(extTmp);
         }
     }
-    Return bx;
+    return isVbrHeaderFrame;
     }
     //endregion
 
     //region "Parsing"
-   private void parseMp3Frame(byte[] buffer) {
-       Dim offset As Integer = 0
-       Dim length As Integer = buffer.Length
 
-       While length>=4
-       Dim mpegVersion, sampleRate, channelMode As Integer
-       Dim layer, bitRate, padding As Integer
-       Dim header As ULong = CULng(BigEndianBitConverter.ToUInt32(buffer, offset)) << 32
+   private void parseMp3Frame(byte[] buffer) throws IOException {
+       int offset = 0;
+       int length = buffer.length;
 
-       If BitHelper.Read(header, 11) <>&H7FF Then
-       Exit While
-       End If
+       while(length>=4) {
 
-       getMp3FrameInfo(header, mpegVersion, layer, bitRate, padding, channelMode, sampleRate)
+           BigInteger header = genBigint(BigEndianBitConverter.ToUInt32(buffer, offset)).shiftLeft(32);
+           AtomicReference<BigInteger> hRef= new AtomicReference<BigInteger>(header);
+           MP3Frame newFrame=null;
 
-       If mpegVersion = 1 OrElse layer<>1 OrElse bitRate = 0 OrElse bitRate = 15 OrElse sampleRate = 3 Then
-       Exit While
-       End If
+           if(BitHelper.read(hRef, 11) != 0x7FF)
+                break;
 
-       bitRate = (If(mpegVersion = 3, mpeg1BitRate(bitRate), mpeg2XBitRate(bitRate))) * 1000
-       calcSampleRate(mpegVersion, sampleRate)
-       Dim frameLenght As Integer = GetFrameLength(mpegVersion, bitRate, sampleRate, padding)
-       If frameLenght>length Then
-       Exit While
-       End If
+            getMp3FrameInfo(header, newFrame);
+           if(newFrame.isInvalidFrame())
+               break;
 
-       ParseHeaderInformation(Me, offset, buffer, bitRate, mpegVersion, sampleRate, channelMode)
+           newFrame.parseBitRate();
+           newFrame.parseSampleRate();
 
+           int frameLenght = newFrame.getFrameLength();
+           if(frameLenght>length)
+               break;
 
-       Me.frameOffsets.Add(Me.totalFrameLength + offset)
-       offset += frameLenght
-       length -= frameLenght
-       End While
+           parseHeaderInformation(this, offset, buffer, newFrame);
 
-       Me.totalFrameLength += buffer.Length
+           frameOffsets.add(totalFrameLength + offset);
+           offset += frameLenght;
+           length -= frameLenght;
+       }
+
+       totalFrameLength += buffer.length;
    }
 
-    Private Shared Sub ParseHeaderInformation(ByRef mp3Extractor As Mp3AudioExtractor, _
-            offset As Int32, buffer As Byte(), bitrate As Int32, mpegVer As Int32, sampleRate As Int32, channelMode As Int32)
-    Dim isVbrHeaderFrame As Boolean = checkForVBRHeader(buffer, mp3Extractor.frameOffsets, offset, mpegVer, channelMode, mp3Extractor)
-    If Not isVbrHeaderFrame Then
-    With mp3Extractor.FrameInfo
-    If .BitRate = 0 Then
-            .BitRate = bitrate
-            .MpegVersion = mpegVer
-            .SampleRate = sampleRate
-            .ChannelMode = channelMode
-            .FirstFrameHeader = BigEndianBitConverter.ToUInt32(buffer, offset)
-    ElseIf Not mp3Extractor.isVbr AndAlso bitrate <> .BitRate Then
-    mp3Extractor.isVbr = True
+    private static void parseHeaderInformation(MP3Extractor mp3Extractor, int offset, byte[] buffer, MP3Frame frame) throws IOException {
 
-    If Not mp3Extractor.hasVbrHeader Then
-    If mp3Extractor.delayWrite Then
-    mp3Extractor.WriteVbrHeader(True)
-    mp3Extractor.doWriteVbrHeader = True
-    mp3Extractor.delayWrite = False
-            Else
-    mp3Extractor.ls_warnings.Add("Detected VBR too late, cannot add VBR header.")
-    End If
-    End If
-    End If
-    End With
-    End If
-    End Sub
+        boolean isVbrHeaderFrame = checkForVBRHeader(buffer, mp3Extractor.frameOffsets, offset, frame.getMpegVersion(), frame.getChannelMode(), mp3Extractor);
+        if (!isVbrHeaderFrame) {
+            if (mp3Extractor.frameInfo.getBitRate() == 0) {
+                mp3Extractor.frameInfo = frame;
 
-    Private Sub WriteVbrHeader(isPlaceholder As Boolean)
-    Dim buffer As Byte() = New Byte(GetFrameLength(FrameInfo.MpegVersion, 64000, FrameInfo.SampleRate, 0)) {}
+                mp3Extractor.frameInfo.setBitRate(frame.getBitRate())
+                        .setMpegVersion(frame.getMpegVersion()).setSampleRate(frame.getSampleRate()).setChannelMode(frame.getChannelMode())
+                        .setFirstFrameHeader(BigEndianBitConverter.ToUInt32(buffer, offset));
 
-    If Not isPlaceholder Then
-    Dim header As UInteger = FrameInfo.FirstFrameHeader
-    Dim dataOffset As Integer = GetFrameDataOffset(FrameInfo.MpegVersion, FrameInfo.ChannelMode)
-    header = header And &HFFFE0DFFUI
-            header = header Or (If(FrameInfo.MpegVersion = 3, 5, 8)) << 12
-            BitHelper.CopyBytes(buffer, 0, BigEndianBitConverter.GetBytes(header))
-            BitHelper.CopyBytes(buffer, dataOffset, BigEndianBitConverter.GetBytes(&H58696E67))
-            BitHelper.CopyBytes(buffer, dataOffset + 4, BigEndianBitConverter.GetBytes(&H7))
-            BitHelper.CopyBytes(buffer, dataOffset + 8, BigEndianBitConverter.GetBytes(frameOffsets.Count))
-            BitHelper.CopyBytes(buffer, dataOffset + 12, BigEndianBitConverter.GetBytes(totalFrameLength))
+            } else if (!mp3Extractor.isVbr && bitrate != mp3Extractor.frameInfo.getBitRate()) {
+                mp3Extractor.isVbr = true;
+                if (!mp3Extractor.hasVbrHeader) {
+                    if (mp3Extractor.delayWrite) {
+                        mp3Extractor.writeVbrHeader(true);
+                        mp3Extractor.doWriteVbrHeader = true;
+                        mp3Extractor.delayWrite = false;
+                    } else {
+                        mp3Extractor.ls_warnings.add("Detected VBR too late, cannot add VBR header.");
+                    }
+                }
+            }
+        }
+    }
 
-    For i As Int32 = 0 To 99
-    Dim frameIndex As Integer = ((i / 100.0) * Me.frameOffsets.Count)
-    buffer(dataOffset + 16 + i) = (Me.frameOffsets(frameIndex) / Me.totalFrameLength * 256.0)
-    Next
-    End If
+    private void writeVbrHeader(boolean isPlaceholder) throws IOException {
+        byte[] buffer = new byte[(getFrameLength(frameInfo.getMpegVersion(), 64000, frameInfo.getSampleRate(), 0))];
+        if (!isPlaceholder) {
+            BigInteger header = genBigint(frameInfo.getFirstFrameHeader(), false);
+            int dataOffset = getFrameDataOffset(frameInfo.getMpegVersion(), frameInfo.getChannelMode());
+            header = bgintAnd(header, 0xFFFE0DFFL);
+            header = bgintOr(header ,((frameInfo.getMpegVersion()==3 ? 5 : 8)) << 12);
+            BitHelper.copyBytes(buffer, 0, BigEndianBitConverter.getBytes(header));
+            BitHelper.copyBytes(buffer, dataOffset, BigEndianBitConverter.getBytes(0x58696E67));
+            BitHelper.copyBytes(buffer, dataOffset + 4, BigEndianBitConverter.getBytes(0x7));
+            BitHelper.copyBytes(buffer, dataOffset + 8, BigEndianBitConverter.getBytes(frameOffsets.size()));
+            BitHelper.copyBytes(buffer, dataOffset + 12, BigEndianBitConverter.getBytes(totalFrameLength));
 
-    Me.p_videoStream.Write(buffer, 0, buffer.Length)
-    End Sub
+            for (int i = 0; i <= 99; i++) {
+                int frameIndex = ((i / 100) * this.frameOffsets.size());
+                buffer[dataOffset + 16 + i] = (byte)(this.frameOffsets.get(frameIndex) / this.totalFrameLength * 256.0);
+            }
+        }
+        videoStream.write(buffer);
+    }
+
+
+
+
     //Region
 
 

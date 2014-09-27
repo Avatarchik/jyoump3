@@ -2,13 +2,15 @@ package com.jytmp3.extraction;
 
 import com.jytmp3.MemoryStream;
 
+import java.io.IOException;
+
 /**
  * Created by Sp0x on 9/24/2014.
  */
 public interface IAudioExtractor {
     MemoryStream getVideoStream();
     void setVideoStream(MemoryStream stream);
-    void writeChunk(byte bytes[], long timeStamp);//timestamp = uint32
+    void writeChunk(byte bytes[], long timeStamp) throws IOException;//timestamp = uint32
 
    /* extends  IDisposable
 

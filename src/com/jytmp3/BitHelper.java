@@ -38,9 +38,9 @@ public class BitHelper {
         System.arraycopy(src, 0, dst, dstOffset, src.length);
     }
     //ulong, int
-    public static int read(AtomicReference<BigInteger> x, int len) {
-        int r = (x.get().shiftRight(64 - len)).intValue();
-        x.set(x.get().shiftLeft(len));
+    public static int read(AtomicReference<BigInteger> header, int len) {
+        int r = (header.get().shiftRight(64 - len)).intValue();
+        header.set(header.get().shiftLeft(len));
         return r;
     }
 
@@ -66,24 +66,31 @@ public class BitHelper {
     private BigInteger flagField = genBigint(0xffffffff, 0xffffffff,false);
 
 
-
+//region BigInteger helpers
     /*
     Generates a new BigInteger,
      */
     public static BigInteger genBigint(int number){ return genBigint(number,true); }
+    public static BigInteger genBigint(long number){return genBigint(number,true); }
     public static BigInteger genBigint(int number, boolean signed)
     {
         return signed ? new BigInteger(getBytes(number)) : new BigInteger(1,getBytes(number));
     }
+    public static BigInteger genBigint(long i1, boolean signed) {
+        return signed ? new BigInteger(getBytes(i1)) : new BigInteger(1,getBytes(i1));
+    }
+
     public static BigInteger genBigint(int i1, int i2)
     {
        return genBigint(i1,i2,true);
     }
     public static BigInteger genBigint(int i1, int i2, boolean signed)
     {
-        byte byts[] = getBytes(i1,i2);
-        return signed ? new BigInteger(byts) : new BigInteger(1, byts);
+        byte bytes[] = getBytes(i1,i2);
+        return signed ? new BigInteger(bytes) : new BigInteger(1, bytes);
     }
+
+
     public static byte[] trimBigint(BigInteger bgInt)
     {
         byte[] val = bgInt.toByteArray();
@@ -91,6 +98,18 @@ public class BitHelper {
             val = ArrayUtils.remove(val,0);
         return val;
     }
+
+    public static BigInteger bgintOr(BigInteger header, int i){return bgintOr(header,i,true);}
+    public static BigInteger bgintOr(BigInteger header, int i, boolean signed) {
+        BigInteger tmp = genBigint(i,signed);
+        return header.or(tmp);
+    }
+    public static BigInteger bgintAnd(BigInteger header, long i){return bgintAnd(header,i,true);}
+    public static BigInteger bgintAnd(BigInteger header, long l, boolean signed) {
+        BigInteger tmp = genBigint(l,signed);
+        return header.and(tmp);
+    }
+    //endregion
 
 
     public static int[] toUBytes(byte[] arr)
@@ -100,13 +119,22 @@ public class BitHelper {
         { out[i]=cInt(arr[i]);  }
         return out;
     }
+
     public static byte[] getBytes(int val)
     {
-        return new byte[] {
-                (byte)(val >> 24),
-                (byte)(val >> 16),
-                (byte)(val >> 8),
-                (byte)val};
+        return new byte[] { (byte)(val >> 24), (byte)(val >> 16), (byte)(val >> 8), (byte)val};
+    }
+    public static byte[] getBytes(long val)
+    {
+        return new byte[] {(byte)(val>>56), (byte)(val>>48), (byte)(val>>40), (byte)(val>>32),
+                           (byte)(val >> 24), (byte)(val >> 16), (byte)(val >> 8), (byte)val};
+    }
+    public static byte[] getBytes(long val, long val2)
+    {
+        return new byte[] { (byte)(val>>56), (byte)(val>>48), (byte)(val>>40), (byte)(val>>32),
+                            (byte)(val >> 24), (byte)(val >> 16), (byte)(val >> 8), (byte)val,
+                            (byte)(val2>>56), (byte)(val2>>48), (byte)(val2>>40), (byte)(val2>>32),
+                            (byte)(val2 >> 24), (byte)(val2 >> 16), (byte)(val2 >> 8), (byte)val2};
     }
     public static byte[] getBytes(int b1, int b2)
     {

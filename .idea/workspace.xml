@@ -2,22 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e110e1b3-e390-4ef4-8e6d-56693285f39d" name="Default" comment="--ammend&#10;">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/jytmp3/Delegate.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/jytmp3/extraction/IAudioExtractor.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/jytmp3/extraction/MP3Extractor.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/jytmp3/extraction/MP3Frame.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/jytmp3/Main.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/jytmp3/MemoryStream.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/jytmp3/SeekOrigin.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" />
-      <change type="DELETED" beforePath="C:\Users\Sp0x\IdeaProjects\untitled\src\com\company\Delegate.java" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Sp0x\IdeaProjects\untitled\src\com\company\IAudioExtractor.java" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Sp0x\IdeaProjects\untitled\src\com\company\IOStream.java" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Sp0x\IdeaProjects\untitled\src\com\company\Main.java" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Sp0x\IdeaProjects\untitled\src\com\company\tex.java" afterPath="" />
-      <change type="MOVED" beforePath="C:\Users\Sp0x\IdeaProjects\untitled\src\com\company\AdaptiveType.java" afterPath="$PROJECT_DIR$/src/com/jytmp3/AdaptiveType.java" />
-      <change type="MOVED" beforePath="C:\Users\Sp0x\IdeaProjects\untitled\src\com\company\AudioType.java" afterPath="$PROJECT_DIR$/src/com/jytmp3/AudioType.java" />
-      <change type="MOVED" beforePath="C:\Users\Sp0x\IdeaProjects\untitled\src\com\company\BitHelper.java" afterPath="$PROJECT_DIR$/src/com/jytmp3/BitHelper.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/jytmp3/extraction/BigEndianBitConverter.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/jytmp3/Holder.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/jytmp3/extraction/MP3HeaderParser.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/jytmp3/BitHelper.java" afterPath="$PROJECT_DIR$/src/com/jytmp3/BitHelper.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/jytmp3/extraction/IAudioExtractor.java" afterPath="$PROJECT_DIR$/src/com/jytmp3/extraction/IAudioExtractor.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/jytmp3/extraction/MP3Extractor.java" afterPath="$PROJECT_DIR$/src/com/jytmp3/extraction/MP3Extractor.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/jytmp3/extraction/MP3Frame.java" afterPath="$PROJECT_DIR$/src/com/jytmp3/extraction/MP3Frame.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="untitled.iws" />
@@ -50,7 +41,7 @@
         <entry file="file://$PROJECT_DIR$/src/com/jytmp3/Main.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="323">
-              <caret line="4" column="19" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
+              <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
               <folding>
                 <element signature="e#116#117#0" expanded="true" />
                 <element signature="e#147#148#0" expanded="true" />
@@ -59,33 +50,15 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MP3Frame.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/jytmp3/extraction/MP3Frame.java">
+      <file leaf-file-name="MemoryStream.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/jytmp3/MemoryStream.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="408">
-              <caret line="53" column="29" selection-start-line="53" selection-start-column="29" selection-end-line="53" selection-end-column="29" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="473" max-vertical-offset="1071">
+              <caret line="94" column="15" selection-start-line="94" selection-start-column="15" selection-end-line="94" selection-end-column="15" />
               <folding>
-                <element signature="n#!!doc;n#getP_ChannelMode#0;n#MP3Frame#0" expanded="false" />
-                <element signature="e#161#162#0" expanded="true" />
-                <element signature="e#197#198#0" expanded="true" />
-                <element signature="e#252#253#0" expanded="true" />
-                <element signature="e#302#303#0" expanded="true" />
-                <element signature="e#335#336#0" expanded="true" />
-                <element signature="e#367#368#0" expanded="true" />
-                <element signature="e#414#415#0" expanded="true" />
-                <element signature="e#456#457#0" expanded="true" />
-                <element signature="e#499#500#0" expanded="true" />
-                <element signature="e#540#541#0" expanded="true" />
-                <element signature="e#606#607#0" expanded="true" />
-                <element signature="e#666#667#0" expanded="true" />
-                <element signature="e#703#704#0" expanded="true" />
-                <element signature="e#739#740#0" expanded="true" />
-                <element signature="e#794#795#0" expanded="true" />
-                <element signature="e#844#845#0" expanded="true" />
-                <element signature="e#880#881#0" expanded="true" />
-                <element signature="e#915#916#0" expanded="true" />
-                <element signature="e#968#969#0" expanded="true" />
-                <element signature="e#1016#1017#0" expanded="true" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#315#332#0" expanded="false" />
+                <element signature="n#!!doc;n#read#0;n#MemoryStream#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -94,19 +67,22 @@
       <file leaf-file-name="MP3Extractor.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/jytmp3/extraction/MP3Extractor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6852792" vertical-offset="3759" max-vertical-offset="5185">
-              <caret line="238" column="43" selection-start-line="238" selection-start-column="43" selection-end-line="238" selection-end-column="43" />
+            <state vertical-scroll-proportion="0.59949625" vertical-offset="3094" max-vertical-offset="4284">
+              <caret line="209" column="24" selection-start-line="209" selection-start-column="24" selection-end-line="209" selection-end-column="24" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1996#1997#0" expanded="true" />
-                <element signature="e#2030#2031#0" expanded="true" />
-                <element signature="e#2099#2100#0" expanded="true" />
-                <element signature="e#2135#2136#0" expanded="true" />
-                <element signature="e#2179#2180#0" expanded="true" />
-                <element signature="e#2213#2214#0" expanded="true" />
-                <element signature="e#2273#2274#0" expanded="true" />
-                <element signature="e#2319#2320#0" expanded="true" />
-                <element signature="e#6702#6730#0" expanded="false" />
+                <element signature="e#1476#1477#0" expanded="true" />
+                <element signature="e#1510#1511#0" expanded="true" />
+                <element signature="e#1579#1580#0" expanded="true" />
+                <element signature="e#1615#1616#0" expanded="true" />
+                <element signature="e#1659#1660#0" expanded="true" />
+                <element signature="e#1693#1694#0" expanded="true" />
+                <element signature="e#1753#1754#0" expanded="true" />
+                <element signature="e#1799#1800#0" expanded="true" />
+                <element signature="method#getMp3FrameInfo#0;class#MP3Extractor#0" expanded="false" />
+                <element signature="e#3417#3429#0" expanded="true" />
+                <element signature="e#4714#4742#0" expanded="false" />
+                <element signature="e#5611#5623#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -115,15 +91,25 @@
       <file leaf-file-name="BitHelper.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/jytmp3/BitHelper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="68" max-vertical-offset="1904">
-              <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="153" max-vertical-offset="2193">
+              <caret line="44" column="5" selection-start-line="44" selection-start-column="5" selection-end-line="44" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="method#copyBlock#0;class#BitHelper#0" expanded="false" />
-                <element signature="e#2437#2438#0" expanded="true" />
-                <element signature="e#2480#2481#0" expanded="true" />
-                <element signature="e#3625#3626#0" expanded="true" />
-                <element signature="e#3656#3657#0" expanded="true" />
+                <element signature="method#getBytes#2;class#BitHelper#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BigEndianBitConverter.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/jytmp3/extraction/BigEndianBitConverter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="15" max-vertical-offset="459">
+              <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+              <folding>
+                <element signature="e#379#380#0" expanded="true" />
+                <element signature="e#403#404#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -163,9 +149,13 @@
         <option value="$PROJECT_DIR$/src/com/company/IAudioExtractor.java" />
         <option value="$PROJECT_DIR$/src/com/company/Main.java" />
         <option value="$PROJECT_DIR$/src/com/jytmp3/Main.java" />
-        <option value="$PROJECT_DIR$/src/com/jytmp3/extraction/MP3Frame.java" />
         <option value="$PROJECT_DIR$/src/com/jytmp3/MemoryStream.java" />
         <option value="$PROJECT_DIR$/src/com/jytmp3/SeekOrigin.java" />
+        <option value="$PROJECT_DIR$/src/com/jytmp3/extraction/BigEndianBitConverter.java" />
+        <option value="$PROJECT_DIR$/src/com/jytmp3/extraction/MP3FrameUpdater.java" />
+        <option value="$PROJECT_DIR$/src/com/jytmp3/BitHelper.java" />
+        <option value="$PROJECT_DIR$/src/com/jytmp3/Holder.java" />
+        <option value="$PROJECT_DIR$/src/com/jytmp3/extraction/MP3Frame.java" />
         <option value="$PROJECT_DIR$/src/com/jytmp3/extraction/MP3Extractor.java" />
       </list>
     </option>
@@ -292,6 +282,27 @@
     <property name="Repository.Attach.Sources" value="true" />
     <property name="OverrideImplement.combined" value="true" />
     <property name="OverrideImplement.overriding.sorted" value="false" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth0" value="52" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder0" value="0" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth1" value="52" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder1" value="1" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth2" value="52" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder2" value="2" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth3" value="474" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder3" value="3" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth0" value="52" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder0" value="0" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth1" value="52" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder1" value="1" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth2" value="52" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder2" value="2" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth3" value="474" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder3" value="3" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.jytmp3.extraction" />
+    </key>
   </component>
   <component name="RunManager" selected="Application.Main">
     <configuration default="false" name="Main" type="Application" factoryName="Application" temporary="true">
@@ -534,7 +545,7 @@
       <workItem from="1411452428229" duration="4747000" />
       <workItem from="1411458789031" duration="10747000" />
       <workItem from="1411474415872" duration="5401000" />
-      <workItem from="1411485724683" duration="55931000" />
+      <workItem from="1411485724683" duration="72360000" />
     </task>
     <task id="LOCAL-00001" summary="--ammend&#10;">
       <created>1411656169654</created>
@@ -544,7 +555,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="77290000" />
+    <option name="totallyTimeSpent" value="93719000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -577,15 +588,15 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31663975" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3215434" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3215434" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3215434" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29581994" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.12908243" sideWeight="0.5016779" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32932332" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.29581994" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3279743" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32885906" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17651632" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1762481" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -627,7 +638,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/jytmp3/BitHelper.java</url>
-          <line>75</line>
+          <line>76</line>
           <properties />
           <option name="timeStamp" value="15" />
         </line-breakpoint>
@@ -789,62 +800,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/jytmp3/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="323">
-          <caret line="4" column="19" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
-          <folding>
-            <element signature="e#116#117#0" expanded="true" />
-            <element signature="e#147#148#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/jytmp3/BitHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="68" max-vertical-offset="1904">
-          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#copyBlock#0;class#BitHelper#0" expanded="false" />
-            <element signature="e#2437#2438#0" expanded="true" />
-            <element signature="e#2480#2481#0" expanded="true" />
-            <element signature="e#3625#3626#0" expanded="true" />
-            <element signature="e#3656#3657#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/jytmp3/extraction/MP3Frame.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="408">
-          <caret line="53" column="29" selection-start-line="53" selection-start-column="29" selection-end-line="53" selection-end-column="29" />
-          <folding>
-            <element signature="n#!!doc;n#getP_ChannelMode#0;n#MP3Frame#0" expanded="false" />
-            <element signature="e#161#162#0" expanded="true" />
-            <element signature="e#197#198#0" expanded="true" />
-            <element signature="e#252#253#0" expanded="true" />
-            <element signature="e#302#303#0" expanded="true" />
-            <element signature="e#335#336#0" expanded="true" />
-            <element signature="e#367#368#0" expanded="true" />
-            <element signature="e#414#415#0" expanded="true" />
-            <element signature="e#456#457#0" expanded="true" />
-            <element signature="e#499#500#0" expanded="true" />
-            <element signature="e#540#541#0" expanded="true" />
-            <element signature="e#606#607#0" expanded="true" />
-            <element signature="e#666#667#0" expanded="true" />
-            <element signature="e#703#704#0" expanded="true" />
-            <element signature="e#739#740#0" expanded="true" />
-            <element signature="e#794#795#0" expanded="true" />
-            <element signature="e#844#845#0" expanded="true" />
-            <element signature="e#880#881#0" expanded="true" />
-            <element signature="e#915#916#0" expanded="true" />
-            <element signature="e#968#969#0" expanded="true" />
-            <element signature="e#1016#1017#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_20/src.zip!/java/lang/Boolean.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33248731" vertical-offset="192" max-vertical-offset="4896">
@@ -905,7 +860,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/jytmp3/MemoryStream.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.1725888" vertical-offset="473" max-vertical-offset="1071">
+        <state vertical-scroll-proportion="0.0" vertical-offset="473" max-vertical-offset="1071">
           <caret line="94" column="15" selection-start-line="94" selection-start-column="15" selection-end-line="94" selection-end-column="15" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -915,21 +870,90 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/jytmp3/extraction/MP3Extractor.java">
+    <entry file="file://$PROJECT_DIR$/src/com/jytmp3/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6852792" vertical-offset="3759" max-vertical-offset="5185">
-          <caret line="238" column="43" selection-start-line="238" selection-start-column="43" selection-end-line="238" selection-end-column="43" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="323">
+          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+          <folding>
+            <element signature="e#116#117#0" expanded="true" />
+            <element signature="e#147#148#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/jytmp3/extraction/BigEndianBitConverter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="15" max-vertical-offset="459">
+          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+          <folding>
+            <element signature="e#379#380#0" expanded="true" />
+            <element signature="e#403#404#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/jytmp3/extraction/MP3HeaderParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.37317073" vertical-offset="0" max-vertical-offset="410">
+          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/jytmp3/Holder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.37317073" vertical-offset="0" max-vertical-offset="410">
+          <caret line="9" column="5" selection-start-line="9" selection-start-column="5" selection-end-line="9" selection-end-column="5" />
+          <folding>
+            <element signature="e#138#139#0" expanded="true" />
+            <element signature="e#170#171#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/jytmp3/BitHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="153" max-vertical-offset="2193">
+          <caret line="44" column="5" selection-start-line="44" selection-start-column="5" selection-end-line="44" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1996#1997#0" expanded="true" />
-            <element signature="e#2030#2031#0" expanded="true" />
-            <element signature="e#2099#2100#0" expanded="true" />
-            <element signature="e#2135#2136#0" expanded="true" />
-            <element signature="e#2179#2180#0" expanded="true" />
-            <element signature="e#2213#2214#0" expanded="true" />
-            <element signature="e#2273#2274#0" expanded="true" />
-            <element signature="e#2319#2320#0" expanded="true" />
-            <element signature="e#6702#6730#0" expanded="false" />
+            <element signature="method#copyBlock#0;class#BitHelper#0" expanded="false" />
+            <element signature="method#getBytes#2;class#BitHelper#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/jytmp3/extraction/MP3Frame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.502439" vertical-offset="1358" max-vertical-offset="1768">
+          <caret line="129" column="10" selection-start-line="129" selection-start-column="10" selection-end-line="129" selection-end-column="10" />
+          <folding>
+            <element signature="n#!!doc;n#p_ChannelMode#0;n#MP3Frame#0" expanded="false" />
+            <element signature="n#!!doc;n#mpeg1BitRate#0;n#MP3Frame#0" expanded="false" />
+            <element signature="method#setLayerCount#0;class#MP3Frame#0" expanded="false" />
+            <element signature="method#MP3Frame#0;class#MP3Frame#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/jytmp3/extraction/MP3Extractor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.59949625" vertical-offset="3094" max-vertical-offset="4284">
+          <caret line="209" column="24" selection-start-line="209" selection-start-column="24" selection-end-line="209" selection-end-column="24" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1476#1477#0" expanded="true" />
+            <element signature="e#1510#1511#0" expanded="true" />
+            <element signature="e#1579#1580#0" expanded="true" />
+            <element signature="e#1615#1616#0" expanded="true" />
+            <element signature="e#1659#1660#0" expanded="true" />
+            <element signature="e#1693#1694#0" expanded="true" />
+            <element signature="e#1753#1754#0" expanded="true" />
+            <element signature="e#1799#1800#0" expanded="true" />
+            <element signature="method#getMp3FrameInfo#0;class#MP3Extractor#0" expanded="false" />
+            <element signature="e#3417#3429#0" expanded="true" />
+            <element signature="e#4714#4742#0" expanded="false" />
+            <element signature="e#5611#5623#0" expanded="true" />
           </folding>
         </state>
       </provider>
