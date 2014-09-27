@@ -155,9 +155,11 @@ public class BitHelper {
     }
 
 
-    static void Write(AtomicReference<BigInteger> x, int len, int val)
+    public static void write(AtomicReference<BigInteger> x, int len, int val)
     {
         BigInteger maskBigInteger = genBigint(0xffffffff,0xffffffff).shiftRight(64-len);
         x.set(x.get().shiftRight(len | val & maskBigInteger.intValue()));
     }
+
+
 }

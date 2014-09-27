@@ -9,4 +9,8 @@ public class BigEndianBitConverter {
     public static int ToUInt32(byte[] buffer, int hdrOffset) {
         return 0;
     }
+
+    public static char ToUInt16(byte[] chunk, int i) {
+        return 0;
+    }
 }

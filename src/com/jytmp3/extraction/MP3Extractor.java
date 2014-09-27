@@ -17,9 +17,7 @@ import static com.jytmp3.BitHelper.*;
 /**
  * Created by Sp0x on 9/26/2014.
  */
-public class MP3Extractor implements IAudioExtractor {
-    public static final int MAX_CHUNK = 1024 * 1000 * 2;
-    MemoryStream videoStream;
+public class MP3Extractor extends AudioExtractor{
     //region Variables
     private ByteBuffer chunkBuffer;// As MemoryStream ' List(Of Byte());// As FileStream
     private ByteBuffer bf;
@@ -37,8 +35,7 @@ public class MP3Extractor implements IAudioExtractor {
 
        //region Construction
     public MP3Extractor(String path) throws FileNotFoundException {
-        FileOutputStream fout = new FileOutputStream(path, false);
-        videoStream = new MemoryStream(fout);
+        super(path);
         ls_warnings = new ArrayList<String>();
         chunkBuffer = ByteBuffer.allocateDirect(MAX_CHUNK);// allocate 35 megs
         frameOffsets = new ArrayList<Long>();
@@ -48,17 +45,7 @@ public class MP3Extractor implements IAudioExtractor {
 
     //region Props
 
-    @Override
-    public com.jytmp3.MemoryStream getVideoStream() {
-        return videoStream;
-    }
-
-    @Override
-    public void setVideoStream(MemoryStream stream) {
-        videoStream = stream;
-    }
-
-    public List<String> getLs_warnings() {
+   public List<String> getLs_warnings() {
         return ls_warnings;
     }
 
@@ -97,14 +84,13 @@ public class MP3Extractor implements IAudioExtractor {
     //endregion
 
     //region "Disposition"
-
+    @Override
     public void dispose() throws IOException {
         flush();
         if (doWriteVbrHeader) {
             videoStream.mark(0, SeekOrigin.Begin);
             writeVbrHeader(false);
         }
-
         videoStream.dispose();
     }
     //endregion

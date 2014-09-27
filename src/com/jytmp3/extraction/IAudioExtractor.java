@@ -10,8 +10,8 @@ import java.io.IOException;
 public interface IAudioExtractor {
     MemoryStream getVideoStream();
     void setVideoStream(MemoryStream stream);
-    void writeChunk(byte bytes[], long timeStamp) throws IOException;//timestamp = uint32
-
+    void writeChunk(byte bytes[], long timeStamp) throws IOException, AudioExtractionException;//timestamp = uint32
+    void dispose();
    /* extends  IDisposable
 
      VideoStream As IO.FileStream

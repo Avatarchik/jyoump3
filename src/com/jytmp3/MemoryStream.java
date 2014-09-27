@@ -10,6 +10,7 @@ public class MemoryStream {
 //region Private Variables
     private InputStream inStream;
     private OutputStream outStream;
+    public String name;
 //endregion
 
 //region Comments
@@ -81,7 +82,7 @@ public class MemoryStream {
         if(outStream!=null) outStream.close();
     }
 
-    public void mark(int i, SeekOrigin origin) throws IOException {
+    public long mark(long i, SeekOrigin origin) throws IOException {
         switch(origin)
         {
             case Begin: break;
@@ -90,7 +91,16 @@ public class MemoryStream {
             default:
                break;
         }
-        inStream.skip(i);
+        return inStream.skip(i);
+    }
+
+    public long length() throws IOException {
+        return inStream.available();
+    }
+
+    public void close() throws IOException {
+        if(inStream!=null) inStream.close();
+        if(outStream!=null) outStream.close();
     }
     //endregion
 }
