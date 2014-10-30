@@ -23,15 +23,18 @@ public class YtVideo {
 
 
     public YtVideo(String videoId, Boolean bAvailable ) {
-        this.Id = videoId;
+        this(videoId);
         this.Available = bAvailable;
     }
+    public YtVideo(String videoId){
+        this.Id= videoId;
+    }
 
-    public List<VideoCodecInfo> GetCodecs(){
+    public List<VideoCodecInfo> getCodecs(){
         YtVideo tmpVideo= Downloader.Factory<AudioDownloader>.FetchVideo(ToString());
         if(tmpVideo==null) return null;
-        Codecs = tmpVideo.Codecs;
-        return Codecs;
+        this.Codecs = tmpVideo.Codecs;
+        return this.Codecs;
     }
 
     public Downloader GetDownloader(DownloadOptions options , Boolean isPlaylist , Boolean lazy ){
@@ -44,6 +47,7 @@ public class YtVideo {
         result.inputUrl = toString();
         return result;
     }
+
 
     @Override
     public String toString(){

@@ -3,8 +3,10 @@ package com.jytmp3;
 import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import org.apache.commons.io.IOUtils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,10 @@ public class Utils {
     public static String dldUrlTxt(String url) throws IOException {
         InputStream input = new URL(url).openConnection().getInputStream();
         return IOUtils.toString(input);
+    }
+    public static byte[] dldUrlData(String url) throws IOException{
+        InputStream input = new URL(url).openConnection().getInputStream();
+        return IOUtils.toByteArray(input);
     }
     public static String sprintf(String pattern, String strFnName) {
         return String.format(pattern, strFnName);

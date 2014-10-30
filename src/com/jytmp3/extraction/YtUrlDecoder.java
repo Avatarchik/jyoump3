@@ -45,7 +45,7 @@ public class YtUrlDecoder {
         videoUrl = TryNormalizeYoutubeUrl(videoUrl);//handle invalid urls
         String id = YtVideo.getVideoId(videoUrl);
         if (id == null) {
-            throw new ArgumentException("URL is not a valid youtube URL!");
+            throw new ArgumentException("You must specify a valid url containing the youtube video id.", "URL is not a valid youtube URL!");
         }
 
         try {

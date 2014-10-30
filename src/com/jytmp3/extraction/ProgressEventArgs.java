@@ -4,8 +4,9 @@ package com.jytmp3.extraction;
  * Created by Sp0x on 9/27/2014.
  */
 public class ProgressEventArgs {
-    double percentage;
-    Object sender;
+    public double percentage;
+    public Boolean IsReady;
+    public Object sender;
 
     public ProgressEventArgs(IProgressUpdater sender, double perc) {
         this.sender = sender;
@@ -27,4 +28,5 @@ public class ProgressEventArgs {
     public void setSender(Object sender) {
         this.sender = sender;
     }
+
 }

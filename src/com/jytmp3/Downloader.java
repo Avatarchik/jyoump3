@@ -1,12 +1,21 @@
 package com.jytmp3;
 
+import com.jytmp3.extraction.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import static com.jytmp3.Utils.dldUrlData;
+
 /**
  * Created by Sp0x on 10/17/2014.
  */
-public class Downloader {
+public abstract class Downloader {
 
 
-    //region "Events"
+//region "Events"
     public EventHandler<IoFinishedEventArgs> DownloadFinished;
 
     public EventHandler<Object> DownloadStarted;
@@ -15,228 +24,203 @@ public class Downloader {
 
 
     protected void raiseDownloadFinished(Object sender , IoFinishedEventArgs e){
-        if(DownloadFinished!=null)DownloadFinished(sender, e)
+        if(DownloadFinished!=null) DownloadFinished.handle(sender, e);
     }
-    Protected Sub RaiseDownloadStarted(sender As Object, e As EventArgs)
-    RaiseEvent DownloadStarted(sender, e)
-    End Sub
-    Protected Sub RaiseDownloadProgressChanged(sender As Object, e As ProgressEventArgs)
-    If e.IsReady OrElse IsUpdateReady(e) Then RaiseEvent DownloadProgressChanged(sender, e)
-    End Sub
-    Protected Sub RaiseExtractionProgressChanged(sender As Object, e As ProgressEventArgs)
-    If e.IsReady OrElse IsUpdateReady(e) Then RaiseEvent ExtractionProgressChanged(sender, e)
-    End Sub
-    #End Region
+    protected void raiseDownloadStarted(Object sender,Object e){
+        if(DownloadStarted!=null) DownloadStarted.handle(sender, e);
+    }
+    protected void raiseDownloadProgressChanged(Object sender,ProgressEventArgs e){
+        e=isUpdateReady(e);
+        if(e.IsReady){
+             if(DownloadProgressChanged!=null) DownloadProgressChanged.handle(sender, e);
+        }
+    }
+    protected void raiseExtractionProgressChanged(Object sender, ProgressEventArgs e){
+        e=isUpdateReady(e);
+        if(e.IsReady){
+            if(ExtractionProgressChanged!=null) ExtractionProgressChanged.handle(sender, e);
+        }
+    }
+//endregion
 
-    #Region "Props"
-            ''' <summary>
-            ''' The url for the video/audio you want to download
-            ''' </summary>
-    Public Property InputUrl As String
+//region "Props"
+    public String InputUrl;
+    public String OutputPath;
+    private DownloadOptions _doOptions = new DownloadOptions();
+    private VideoCodecInfo _vCodec;
+    public Boolean IsPlaylistMember ;
+    private Boolean _bInitialized;
 
-    ' ''' <summary>
-    ' ''' Gets the number of bytes to download. <c>null</c>, if everything is downloaded.
-    ' ''' </summary>
-            'Public Property BytesToDownload As Nullable(Of Integer) = Nothing
+    public DownloadOptions getDownloadOptions() {
+        if(_doOptions==null) _doOptions = new DownloadOptions();
+        return _doOptions;
+    }
+    public void setDownloadOptions(DownloadOptions ops)
+    {
+        _doOptions = ops;
+    }
 
+    public VideoCodecInfo getVideoCodec() throws VideoNotAvailableException, ArgumentNullException {
+        if(_vCodec==null) _vCodec = _doOptions.GetCodec(InputUrl);
+        return _vCodec;
+    }
 
-            ''' <summary>
-            ''' Gets the path to save the video/audio.
-            ''' </summary>
-    Public Property OutputPath As String
+    public void setVideoCodec(VideoCodecInfo _vCodec) {
+        this._vCodec = _vCodec;
+    }
 
+    public Boolean getInitialized() {
+        return _bInitialized;
+    }
 
-    Private _doOptions As New DownloadOptions
-    Public Property Options As DownloadOptions
-            Get
-    If _doOptions Is Nothing Then _doOptions = New DownloadOptions
-    Return _doOptions
-    End Get
-    Set(value As DownloadOptions)
-    _doOptions = value
-    End Set
-    End Property
-
-    Private _vCodec As VideoCodecInfo
-    ''' <summary>
-            ''' Gets the video to download/convert.
-            ''' </summary>
-    Public Property VideoCodec As VideoCodecInfo
-            Get
-    If _vCodec Is Nothing Then
-            _vCodec = Options.GetCodec(InputUrl)
-    _bInitialized = True
-    End If
-    Return _vCodec
-    End Get
-    Set(value As VideoCodecInfo)
-    _vCodec = value
-    End Set
-    End Property
-
-    Public Property IsPlaylistMember As Boolean
-    Private Property _bInitialized As Boolean = False
-    Public ReadOnly Property Initialized() As Boolean
-    Get
-    Return _bInitialized
-    End Get
-    End Property
-    Private Sub SetInitialized(bInited As Boolean)
-    _bInitialized = bInited
-    End Sub
+    private void setInitialized(Boolean _bInitialized) {
+        this._bInitialized = _bInitialized;
+    }
 
 
-    #End Region
+    //endregion
 
-    #Region "Construction"
-    Public Sub New()
-    End Sub
-    Sub New(url As String, ops As DownloadOptions, isPlaylist As Boolean)
-    InputUrl = url
-            IsPlaylistMember = isPlaylist
-    ops.CloneTo(Options)
-            Options.SetOnlyVideo(ops.OnlyVideo)
-    End Sub
-    #End Region
+    //region "Construction"
+
+    public Downloader(String url, DownloadOptions ops , Boolean isPlaylist){
+        InputUrl = url;
+        IsPlaylistMember = isPlaylist;
+        ops.cloneTo(_doOptions);
+        _doOptions.setOnlyVideo(ops.getOnlyVideo());
+    }
 
 
-    #Region "Init"
+    //region "Init"
 
-            ''' <summary>
-            ''' This should be called, only after the first element from the video list ha been fetched.
-            ''' </summary>
-            ''' <param name="dldr">The downloader to initialize.</param>
-            ''' <remarks></remarks>
-    Public Shared Function Initialize(ByRef dldr As Downloader) As Downloader
-    If dldr.VideoCodec Is Nothing Then dldr.VideoCodec = dldr.Options.GetCodec(dldr.InputUrl)
-            '   dldr = Factory.Create(dldr.VideoCodec, dldr.Options, dldr.IsPlaylistMember)
-    If dldr.Options.OnlyVideo Then
-    Factory(Of VideoDownloader).SetExtendor(dldr)
-    Else
-    Factory(Of AudioDownloader).SetExtendor(dldr)
-    End If
-    CorrectDownloaderPath(dldr)
-    dldr.SetInitialized(True)
-    Return dldr
-    End Function
-    'Public Function Initialize() As Downloader
-            '    Initialize(Me)
-            '    CorrectDownloaderPath(Me)
-            '    Return Me
-            'End Function
+    public static Downloader Initialize(Downloader dldr) throws VideoNotAvailableException, ArgumentNullException, IOException {
+        if(dldr._vCodec==null) dldr._vCodec = dldr._doOptions.GetCodec(dldr.InputUrl);
+         //dldr = Factory.Create(dldr.VideoCodec, dldr.Options, dldr.IsPlaylistMember)
+        if(dldr._doOptions.getOnlyVideo()) {
+             Factory<VideoDownloader>.SetExtendor(dldr);
+        } else {
+            Factory<VideoDownloader>.SetExtendor(dldr);
+        }
+        CorrectDownloaderPath(dldr);
+        dldr.setInitialized(True);
+        return dldr;
+    }
 
-    Private Shared Sub CorrectDownloaderPath(ByRef dldr As Downloader)
-    If Not String.IsNullOrEmpty(dldr.OutputPath) Then
-    If System.IO.Directory.Exists(dldr.OutputPath) And Not dldr.OutputPath.EndsWith("\") Then
-    dldr.OutputPath &= "\"
-    End If
-    End If
+    private static void  CorrectDownloaderPath(Downloader dldr) throws IOException {
+       File tmpOut = new File(dldr.OutputPath);
+        if(dldr.OutputPath!=null) {
+            if(tmpOut.exists() &&  !dldr.OutputPath.endsWith("\\"))
+                dldr.OutputPath += "\\";
 
-    If dldr.IsPlaylistMember Then
-    If Not String.IsNullOrEmpty(dldr.OutputPath) Then
-    If Not IO.Directory.Exists(dldr.OutputPath) Then
-    IO.Directory.CreateDirectory(dldr.OutputPath)
-    End If
-    End If
-    End If
+        }
 
-    If Not String.IsNullOrEmpty(dldr.OutputPath) And dldr.IsPlaylistMember Then
-    If Not dldr.OutputPath.EndsWith("\") Then dldr.OutputPath &= "\"
-    End If
-    dldr.OutputPath = String.Format("{0}{1}", dldr.OutputPath, dldr.VideoCodec.Title.RemoveIllegalPathCharacters)
-    If TypeOf dldr Is AudioDownloader Then
-    dldr.OutputPath = IO.Path.ChangeExtension(dldr.OutputPath, dldr.VideoCodec.AudioExtension)
-    ElseIf TypeOf dldr Is VideoDownloader Then
-    dldr.OutputPath = IO.Path.ChangeExtension(dldr.OutputPath, dldr.VideoCodec.VideoExtension)
-    End If
-    End Sub
+        if(dldr.IsPlaylistMember) {
+            if(dldr.OutputPath!=null) {
+                if(!tmpOut.exists())
+                    Files.createDirectory(tmpOut.toPath());
+            }
+        }
 
-    Public Shared Function CreateEmpty(url As String, ops As DownloadOptions, isPlaylist As Boolean) As Downloader
-    Dim dlm As Downloader = New VideoDownloader
-    dlm.InputUrl = url
-    dlm.IsPlaylistMember = isPlaylist
-    dlm.OutputPath = ops.Output
-    ops.CloneTo(dlm.Options)
-            dlm.Options.SetOnlyVideo(ops.OnlyVideo)
-    Return dlm
-    End Function
-    #End Region
+        if(dldr.OutputPath!=null && dldr.IsPlaylistMember) {
+            if (!dldr.OutputPath.endsWith("\\")) dldr.OutputPath += "\\";
+        }
+        dldr.OutputPath = String.format("%s%s", dldr.OutputPath, RemoveIllegalPathCharacters(dldr._vCodec.title));
+        if(dldr instanceof AudioDownloader) {
+            dldr.OutputPath = Path.ChangeExtension(dldr.OutputPath, dldr._vCodec.getAudioExtension());
+        } else if(dldr instanceof  VideoDownloader){
+            dldr.OutputPath = Path.ChangeExtension(dldr.OutputPath, dldr._vCodec.getVideoExtension());
+        }
+    }
+
+    public static Downloader CreateEmpty(String url, DownloadOptions ops,Boolean isPlaylist ) {
+        Downloader dlm = new VideoDownloader();
+        dlm.InputUrl = url;
+        dlm.IsPlaylistMember = isPlaylist;
+        dlm.OutputPath = ops.Output;
+        ops.CloneTo(dlm.Options);
+        dlm._doOptions.SetOnlyVideo(ops.OnlyVideo);
+        return dlm;
+    }
+    //endregion
 
 
-    #Region "Update filtering"
-    Private Property _updateDelta As Double = 0D
-    Public Property UpdateInterval As Double = 2D
+    //region "Update filtering"
+    private double _updateDelta = 0D;
+    public double UpdateInterval = 2D;
 
-    Protected Function IsUpdateReady(ByRef pge As ProgressEventArgs) As Boolean
-    Dim shouldPrint As Boolean = False
-    Dim delta As Double = Math.Abs(pge.ProgressPercentage - _updateDelta)
-    If _updateDelta.Equals(0D) Or _updateDelta.Equals(100D) Then
-    shouldPrint = True
-            _updateDelta = pge.ProgressPercentage
-    ElseIf delta > UpdateInterval Then ' get delta
-    shouldPrint = True
-            _updateDelta = pge.ProgressPercentage
-    End If
-    pge.IsReady = shouldPrint
-    Return shouldPrint
-    End Function
-    #End Region
+    protected ProgressEventArgs isUpdateReady(ProgressEventArgs pge) {
+        Boolean shouldPrint =false;
+        double delta = Math.abs(pge.getPercentage() - _updateDelta);
+        if(_updateDelta ==0D || _updateDelta == 100D) {
+            shouldPrint = true;
+            _updateDelta = pge.getPercentage();
+        }else if (delta > UpdateInterval){
+            //' get delta
+            shouldPrint = true;
+            _updateDelta = pge.getPercentage();
+        }
+        pge.IsReady = shouldPrint;
+        return pge;
+    }
+    //endregion
 
-    #Region "Starting"
-            ''' <summary>
-            ''' Starts the work of the <see cref="Downloader"/>.
-            ''' </summary>
-    Protected MustOverride Sub StartDownloading()
+    //region "Starting"
+    protected abstract void StartDownloading();
 
-    Public Sub Start()
-    If Not Initialized Then
-    Throw New InvalidOperationException("Downloader not initialized.")
-    End If
-    StartDownloading()
-    End Sub
-    Public Overloads Async Sub StartAsync()
-    Await Task.Factory.StartNew(AddressOf Start)
-    End Sub
-    Public Overloads Sub StartThreaded()
-    Task.Factory.StartNew(AddressOf Start)
-    End Sub
+    public void Start() throws InvalidOperationException {
+        if(!getInitialized()) {
+            throw new InvalidOperationException("Downloader not initialized.");
+        }
+        StartDownloading();
+    }
+    public synchronized void StartAsync() {
+        StartThreaded();
+    }
 
-    #End Region
+    public void StartThreaded() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Start();
+                } catch (InvalidOperationException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+    //endregion
 
-    #Region "Overrides"
-    Public Overrides Function ToString() As String
-    Return MyBase.ToString()
-    End Function
-    #End Region
+    //region "Overrides"
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+    //endregion
 
-    Public Function GetVideoImageBytes() As Byte()
-    Dim url As String = YtVideo.GetVideoCoverUrl(InputUrl)
-    Dim wc As New WebClient()
-    Return wc.DownloadData(url)
-    End Function
+    public byte[] getVideoImageBytes() throws InvalidOperationException, IOException {
+        String url = YtVideo.GetVideoCoverUrl(InputUrl);
+        return dldUrlData(url);
+    }
 
-    #Region "Cloning"
 
-    Public Function Clone() As Downloader
-    Dim res As Downloader = Nothing
-    CloneMembersTo(res)
-    Return res
-    End Function
+    //region "Cloning"
 
-    Public Sub CloneMembersTo(ByRef dldr As Downloader)
-    If dldr Is Nothing Then
-    Dim initer As ConstructorInfo = Me.GetType.GetConstructor({})
-    dldr = initer.Invoke({})
-    End If
-    dldr.InputUrl = InputUrl
-    dldr.OutputPath = OutputPath
-    dldr.Options = Options
-    dldr.SetInitialized(Initialized)
-    dldr.IsPlaylistMember = IsPlaylistMember
-    dldr.UpdateInterval = UpdateInterval
-    dldr._updateDelta = _updateDelta
-    End Sub
+    public Downloader clone() {
+        Downloader res= cloneMembersTo();
+        return res;
+    }
 
-    #End Region
+    public Downloader cloneMembersTo() {
+        Downloader dldr;
+        dldr.InputUrl = InputUrl;
+        dldr.OutputPath = OutputPath;
+        dldr.setDownloadOptions(_doOptions);// = Options
+        dldr.setInitialized(getInitialized());
+        dldr.IsPlaylistMember = IsPlaylistMember;
+        dldr.UpdateInterval = UpdateInterval;
+        dldr._updateDelta = _updateDelta;
+    }
+
+    //endregion
 
 }

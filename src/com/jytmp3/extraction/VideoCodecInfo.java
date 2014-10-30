@@ -1,11 +1,54 @@
 package com.jytmp3.extraction;
 
 import com.jytmp3.AudioType;
+import static propel.core.utils.Linq.*;
+import propel.core.functional.Functions.*;
+import propel.core.functional.Predicates.*;
+
+import java.util.List;
 
 /**
  * Created by Sp0x on 9/28/2014.
  */
-public class VideoCodecInfo {
+public class VideoCodecInfo implements Comparable<Integer> {
+
+    @Override
+    public int compareTo(Integer o) {
+        final int BEFORE = -1;
+        final int EQUAL = 0;
+        final int AFTER = 1;
+        if(o>this.resolution) return AFTER;
+        if(0==this.resolution) return EQUAL;
+        if(o<this.resolution) return BEFORE;
+        return EQUAL;
+    }
+
+    public static Iterable<VideoCodecInfo> orderByResolution(Iterable<VideoCodecInfo > videos, Boolean descending){
+        Iterable<VideoCodecInfo> result;
+        result= orderBy(videos, new Function1<VideoCodecInfo, Comparable>(){
+            @Override
+            public Comparable apply(VideoCodecInfo videoCodecInfo) {
+                return videoCodecInfo;
+            }
+        });
+        if(descending){
+          result=reverse(result);
+        }
+        return result;
+    }
+    public static Iterable<VideoCodecInfo> orderByAudioBitrate(Iterable<VideoCodecInfo > videos, Boolean descending){
+        Iterable<VideoCodecInfo> result;
+        result= orderBy(videos, new Function1<VideoCodecInfo, Comparable>(){
+            @Override
+            public Comparable apply(VideoCodecInfo videoCodecInfo) {
+                return videoCodecInfo.audioBitrate;
+            }
+        });
+        if(descending){
+            result=reverse(result);
+        }
+        return result;
+    }
 
     public static VideoCodecInfo defaults[] = {
             new VideoCodecInfo(5, VideoType.Flash, 240, false, AudioType.Mp3, 64, AdaptiveType.None),
